@@ -1,0 +1,36 @@
+.tabs {
+    .tab-header-wrap {
+        display: flex;
+        padding: 0 1px;
+    }
+
+    .tab-header {
+        padding: 8px 20px;
+        font-weight: bold;
+        transition: color .2s linear;
+
+        &.active {
+            box-shadow: 0 1px 0 #fff, 0 0 0 1px $c-border;
+        }
+
+        &:not(.active) {
+            cursor: pointer;
+
+            &:hover {
+                color: $c-highlight;
+            }
+        }
+    }
+
+    .tab-content-wrap {
+        border: 1px solid $c-border;
+    }
+
+    .tab-content {
+        padding: 30px 20px;
+
+        &:not(.active) {
+            display: none;
+        }
+    }
+}

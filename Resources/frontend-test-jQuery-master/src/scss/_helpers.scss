@@ -1,0 +1,21 @@
+.hide {
+  display: none !important;
+
+  &-desktop {
+    @media (min-width: $desktop-min) {
+      display: none !important;
+    }
+  }
+
+  &-tablet {
+    @media (min-width: $tablet-min) and (max-width: $tablet-max) {
+      display: none !important;
+    }
+  }
+
+  &-mobile {
+    @media (max-width: $mobile-max) {
+      display: none !important;
+    }
+  }
+}

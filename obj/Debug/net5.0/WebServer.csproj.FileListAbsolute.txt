@@ -1,0 +1,16 @@
+D:\source\SimpleNetCommunticationProgs\ClientServerProject\WebServer\bin\Debug\net5.0\WebServer.exe
+D:\source\SimpleNetCommunticationProgs\ClientServerProject\WebServer\bin\Debug\net5.0\WebServer.deps.json
+D:\source\SimpleNetCommunticationProgs\ClientServerProject\WebServer\bin\Debug\net5.0\WebServer.runtimeconfig.json
+D:\source\SimpleNetCommunticationProgs\ClientServerProject\WebServer\bin\Debug\net5.0\WebServer.runtimeconfig.dev.json
+D:\source\SimpleNetCommunticationProgs\ClientServerProject\WebServer\bin\Debug\net5.0\WebServer.dll
+D:\source\SimpleNetCommunticationProgs\ClientServerProject\WebServer\bin\Debug\net5.0\ref\WebServer.dll
+D:\source\SimpleNetCommunticationProgs\ClientServerProject\WebServer\bin\Debug\net5.0\WebServer.pdb
+D:\source\SimpleNetCommunticationProgs\ClientServerProject\WebServer\obj\Debug\net5.0\WebServer.csprojAssemblyReference.cache
+D:\source\SimpleNetCommunticationProgs\ClientServerProject\WebServer\obj\Debug\net5.0\WebServer.GeneratedMSBuildEditorConfig.editorconfig
+D:\source\SimpleNetCommunticationProgs\ClientServerProject\WebServer\obj\Debug\net5.0\WebServer.AssemblyInfoInputs.cache
+D:\source\SimpleNetCommunticationProgs\ClientServerProject\WebServer\obj\Debug\net5.0\WebServer.AssemblyInfo.cs
+D:\source\SimpleNetCommunticationProgs\ClientServerProject\WebServer\obj\Debug\net5.0\WebServer.csproj.CoreCompileInputs.cache
+D:\source\SimpleNetCommunticationProgs\ClientServerProject\WebServer\obj\Debug\net5.0\WebServer.dll
+D:\source\SimpleNetCommunticationProgs\ClientServerProject\WebServer\obj\Debug\net5.0\ref\WebServer.dll
+D:\source\SimpleNetCommunticationProgs\ClientServerProject\WebServer\obj\Debug\net5.0\WebServer.pdb
+D:\source\SimpleNetCommunticationProgs\ClientServerProject\WebServer\obj\Debug\net5.0\WebServer.genruntimeconfig.cache

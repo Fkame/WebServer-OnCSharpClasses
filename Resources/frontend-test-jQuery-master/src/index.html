@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>front-test-svk</title>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="../hierarchy-select-list-site-jquery-bootstrap/src/hierarchy-select.js"></script>
+    <link rel="stylesheet" href="css/styles.min.css">
+    <link rel="stylesheet" href="../hierarchy-select-list-site-jquery-bootstrap/src/hierarchy-select.scss">
+</head>
+<body>
+<header class="header wrap">
+    <div class="header-logo">
+        <a href="index.html">
+            <svg xmlns="http://www.w3.org/2000/svg" width="46" height="36" fill="none" viewBox="0 0 46 36" class="svg">
+                <defs>
+                    <linearGradient id="paint0_linear" x1="7.67" x2="40.36" y1="37.81" y2="4.61" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#F26D21"/>
+                        <stop offset="1" stop-color="#FDD106"/>
+                    </linearGradient>
+                </defs>
+                <path fill="url(#paint0_linear)" fill-rule="evenodd" d="M24.86.34c9.52-1.86 18.79 4.12 20.7 13.34C48.99 30.18 31.5 40 14.49 34.43c2.57-.95 4.5-2.72 4.95-4.83-5.86 3.48-13.23 3.53-19.43.64 4-.71 11.98-4.76 13.34-8.41a13.4 13.4 0 00-8.71 3.73c1.2-7.36 7.58-12.4 14.19-13.74-2.04-1.53-5.66-1.25-7.33.3A17.34 17.34 0 0124.86.34z" clip-rule="evenodd"/>
+            </svg>
+        </a>
+    </div>
+    <nav class="header-nav">
+        <ul class="header-menu">
+            <li class="header-menu-item"><a href="#">Пункт 1</a></li>
+            <li class="header-menu-item"><a href="#">Пункт 2</a></li>
+            <li class="header-menu-item"><a href="#">Пункт 3</a></li>
+        </ul>
+    </nav>
+</header>
+<div class="main wrap">
+    <div class="main-content">
+        <h1>Тестовое задание</h1>
+        <div class="tabs js-tabs " id="example-three">
+            <!--<ul id="menu">
+                <li>
+                <p id="pList>Описание</p>-->
+                    <ul class="tab-header-wrap">
+                        <li class="tab-header js-tab-header ">Описание</li>
+                        <li class="tab-header js-tab-header ">Пустой таб</li>
+                        <li class="tab-header js-tab-header">таб с картинкой</li>
+                        <li class="tab-header js-tab-header">another one</li>
+                    <!--</ul>
+                </li>-->
+            </ul>
+            <ul class="tab-content-wrap">
+                <li class="tab-content js-tab-content">
+                    <h2>Какие изменения нужно внести:</h2>
+                    <ul>
+                        <li>Футер должен быть прибит к низу окна, если контента мало;</li>
+                        <li>Сайдбар должен быть всегда дотянут до футера;</li>
+                        <li>При прокрутке, шапка страницы должна фиксироваться вверху окна, при этом высота шапки должна плавно уменьшиться до 70 пикселей;</li>
+                        <li>При любой ширине экрана, шапка должна адекватно отображаться (перестраиваться, если необходимо);</li>
+                        <li>
+                            При ширине экрана менее 768 пикселей, табы должны превращаться в выпадающий список;
+                            <ul>
+                                <li>Заголовок активного таба должен отображаться в качестве выбранного пункта списка;</li>
+                                <li>Желательно реализовать анимацию открытия/закрытия списка;</li>
+                            </ul>
+                        </li>
+                        <li>
+                            Добавить таб с блоком, внутри которого должно находиться изображение (любое, на ваше усмотрение), превышающее этот блок по размерам;
+                            <ul>
+                                <li>У блока должен быть установлен <code>overflow: hidden</code>;</li>
+                                <li>Нужен механизм перетаскивания изображения в пределах блока, чтобы увидеть скрытые части картинки;</li>
+                            </ul>
+                        </li>
+                        <li>
+                            Добавить ещё один таб с блоком, внутри которого должно находиться изображение (любое, на ваше усмотрение), превышающее этот блок по размерам;
+                            <ul>
+                                <li>У блока должен быть установлен <code>overflow: hidden</code>;</li>
+                                <li>Нужен механизм плавного перемещения изображения по наведению мышкой в пределах блока, чтобы увидеть скрытые части картинки (Навели в правую часть контейнера - увидели правую часть изображения).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="tab-content js-tab-content">
+                    <p>Здесь ничего нет</p>
+                </li>
+                <li class="tab-content js-tab-content">
+
+                    <div id="containment-wrapper">
+                        <div id="draggable" class="ui-widget-content">
+                            <img class="photos" src="img/rails.jpg" alt="" />
+                        </div>
+                    </div>
+                </li>
+                <li class="tab-content js-tab-content">
+                    <section id="movephoto" >
+                        <img src="img/rails.jpg" alt="" />
+                    </section>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="main-sidebar hide-mobile">
+        <p>Сайдбар</p>
+    </div>
+</div>
+<footer class="footer wrap">
+    <p class="footer-copyright">Копирайт</p>
+</footer>
+
+<script src="js/vendor.min.js"></script>
+<script src="js/scripts.min.js"></script>
+
+</body>
+</html>
