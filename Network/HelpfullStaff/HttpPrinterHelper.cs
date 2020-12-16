@@ -2,10 +2,14 @@ using System;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
+using WebServer.HelpfulStaff;
 
-namespace WebServer.HelpfulStaff
+namespace WebServer.Network.HelpfulStaff
 {
-    public static class HttpHelper
+    /// <summary>
+    /// Статический класс, облегчающий вывод информации из HTTP запроса
+    /// </summary>
+    public static class HttpPrinterHelper
     {
         public static ConsoleColor NameColor {get; set;} = ConsoleColor.Red;
         public static ConsoleColor ValueColor {get; set;} = ConsoleColor.DarkGreen;
@@ -55,30 +59,11 @@ namespace WebServer.HelpfulStaff
                 ConsoleColorPrinter.Write(names[i], NameColor);
                 ConsoleColorPrinter.WriteLine(values[i], ValueColor);
             }
-
-            #region Старая реализация
-            /*
-            ConsoleColorPrinter.Write($"IsSecureConnection={request.IsSecureConnection}\n", ConsoleColor.Red);
-            ConsoleColorPrinter.Write($"UserHostAddress={request.UserHostAddress}\n", ConsoleColor.Red);
-            ConsoleColorPrinter.Write($"UserAgent={request.UserAgent}\n", ConsoleColor.Red);
-            ConsoleColorPrinter.Write($"Url={request.Url.OriginalString}\n", ConsoleColor.Red);
-            ConsoleColorPrinter.Write($"TransportContext={request.TransportContext}\n", ConsoleColor.Red);
-            ConsoleColorPrinter.Write($"ServiceName={request.ServiceName}\n", ConsoleColor.Red);
-            ConsoleColorPrinter.Write($"RawUrl={request.RawUrl.ToString()}\n", ConsoleColor.Red);
-            ConsoleColorPrinter.Write($"ProtocolVersion={request.ProtocolVersion}\n", ConsoleColor.Red);
-            ConsoleColorPrinter.Write($"UserHostName={request.UserHostName}\n", ConsoleColor.Red);
-            ConsoleColorPrinter.Write($"QueryString={request.QueryString}\n", ConsoleColor.Red);
-            ConsoleColorPrinter.Write($"UserLanguages={string.Join(' ', request.UserLanguages)}\n", ConsoleColor.Red);
-            ConsoleColorPrinter.Write($"HttpMethod={request.HttpMethod}\n", ConsoleColor.Red);
-            ConsoleColorPrinter.Write($"UrlReferrer={request.UrlReferrer}\n", ConsoleColor.Red);
-            ConsoleColorPrinter.Write($"Headers=\n", ConsoleColor.Red);
-            */
-            #endregion
-
-            HttpHelper.PrintHeaders(request);
+            
+            HttpPrinterHelper.PrintFullHeaders(request);
         }
 
-        public static void PrintHeaders(HttpListenerRequest request)
+        public static void PrintFullHeaders(HttpListenerRequest request)
         {
             ConsoleColorPrinter.Write($"Headers=\n", NameColor);
             System.Collections.Specialized.NameValueCollection headers = request.Headers;
@@ -97,6 +82,51 @@ namespace WebServer.HelpfulStaff
                 {
                     ConsoleColorPrinter.WriteLine("\t\tThere is no value associated with the header.", HeadersValuesColor);
                 }
+            }
+        }
+
+        public static void PrintMinimalHttpInfo(HttpListenerRequest request)
+        {
+            string[] names = {
+                "UserHostAddress=",
+                "Url=", 
+                "RawUrl=",
+                "ProtocolVersion=",      
+                "HttpMethod=",  
+                "Content-Type=",
+                "Content-Encoding="
+            };
+
+            string[] values = {
+                $"{request.UserHostAddress}",
+                $"{request.Url.OriginalString}",
+                $"{request.RawUrl}",
+                $"{request.ProtocolVersion}",
+                $"{request.HttpMethod}",
+                $"{request.ContentType}",
+                $"{request.ContentEncoding}"
+            };
+
+            for (int i = 0; i < names.Length; i++)
+            {
+                ConsoleColorPrinter.Write(names[i], NameColor);
+                ConsoleColorPrinter.WriteLine(values[i], ValueColor);
+            }
+            Console.WriteLine();
+        }
+
+        public static void PrintRequestInfoByType(HttpListenerRequest request, ShowInfoType amountOfInfo)
+        {
+            switch(amountOfInfo)
+            {
+                case ShowInfoType.ShowFullInfo:
+                    PrintFullHttpRequestText(request);
+                    break;
+                case ShowInfoType.ShowMinimalInfo:
+                    PrintMinimalHttpInfo(request);
+                    break;
+                default:
+                    break;
             }
         }
     }
