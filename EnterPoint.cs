@@ -7,6 +7,7 @@ using System.IO;
 using WebServer.HelpfulStaff;
 using WebServer.Network;
 using WebServer.FileSystem;
+using WebServer.FileSystem.HelpfulStaff;
 using WebServer.Network.HelpfulStaff;
 
 namespace WebServer
@@ -19,6 +20,9 @@ namespace WebServer
             string ip = DefaultArguments.LocalIp;
             int port = DefaultArguments.HttpPort;
             DirectoryInfo directory = new DirectoryInfo(DefaultArguments.DefaultDirectory);
+
+            // Создание директории по умолчанию на случай, если с ней что-то случилось
+            if (!directory.Exists) directory.Create();
             
             // Первый передаваемый аргумент - ip-адрес
             if (args.Length > 0) 

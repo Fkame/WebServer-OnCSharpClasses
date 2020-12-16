@@ -3,7 +3,7 @@ using System.IO;
 
 using WebServer.HelpfulStaff;
 
-namespace WebServer.FileSystem
+namespace WebServer.FileSystem.HelpfulStaff
 {
     /// <summary>
     /// Несколько статических методов, выполняющие проверку валидности директории.
@@ -60,5 +60,7 @@ namespace WebServer.FileSystem
             } while (answer != 'y' & answer != 'n');
             return answer;
         }
+
+        
     }
 }

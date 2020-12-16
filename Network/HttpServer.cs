@@ -44,6 +44,10 @@ namespace WebServer.Network
             }       
         }
 
+        /// <summary>
+        /// Запускает "Настоящий" (потому что что-то делает) обработчик запросов клиента, и обрабатывает его ошибки.
+        /// </summary>
+        /// <param name="result"></param>
         private void ClientHandler(IAsyncResult result)
         {
             try
@@ -57,6 +61,10 @@ namespace WebServer.Network
             }
         }
 
+        /// <summary>
+        /// Асинхронно принимает запрос, после чего завершает асинхронную операцию и начинает обратывать входящий http запрос
+        /// </summary>
+        /// <param name="result"></param>
         private void RealClientHandler(IAsyncResult result)
         {
             HttpListener listener = (HttpListener) result.AsyncState;
