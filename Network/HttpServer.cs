@@ -108,7 +108,9 @@ namespace WebServer.Network
             HttpListenerResponse response = context.Response;
 
             // создаем ответ в виде кода html
-            // this.SendResponce();
+            this.SendResponce(context);
+            # region Old Code
+            /*
             string path = Path.Join(System.Environment.CurrentDirectory, 
                 "Resources", 
                 "frontend-test-jQuery-master", 
@@ -123,6 +125,32 @@ namespace WebServer.Network
             output.Write(buffer, 0, buffer.Length);
             // закрываем поток
             output.Close();
+            */
+            #endregion
+        }
+
+        private void SendResponce(HttpListenerContext context)
+        {
+            string needPath = context.Request.RawUrl;
+
+            if (needPath.EndsWith(HttpUriHelper.UrlPathChar)) 
+                needPath = String.Format("{0}index.html", needPath);
+
+            needPath = HttpUriHelper.ChangeUrlLikeToSeparator(needPath);
+
+            byte[] file = DirectoryWorker.filebuffer.GetValueByKey(needPath);
+            if (file == null) 
+            {
+                ConsoleColorPrinter.WriteLine($"Can not find file for responce by way [{needPath}]", ConsoleColor.DarkGreen);
+                return;
+            }
+
+            ConsoleColorPrinter.WriteLine($"Responcing file by way [{needPath}]", ConsoleColor.DarkGreen);
+            HttpListenerResponse response = context.Response;
+            Stream output = response.OutputStream;
+            output.Write(file, 0, file.Length);
+            output.Close();
+            response.Close();
         }
 
         /// <summary>

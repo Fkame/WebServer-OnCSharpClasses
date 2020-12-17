@@ -63,7 +63,7 @@ namespace WebServer.FileSystem
             // Проверка: совпадают ли размеры файлов. Нужно для того, чтобы не было исключения при следующей проверке
             if (fileFromDict.Length != fileFromDisc.Length) 
             {
-                Console.WriteLine($"File on disc is not the same as in buffer - replacing");
+                Console.WriteLine($"File on disc is not the same length as in buffer - replacing");
                 filebuffer.ReplaceValue(localPartOfPath, fileFromDisc);
                 //this.PrintFileBuffer(filebuffer, DirectoryPath);
                 return;
@@ -77,7 +77,7 @@ namespace WebServer.FileSystem
                     filebuffer.ReplaceValue(localPartOfPath, fileFromDisc);
                     Console.WriteLine($"File on disc is not the same as in buffer - replacing");
                     //this.PrintFileBuffer(filebuffer, DirectoryPath);
-                    break;
+                    return;
                 }
             }
             

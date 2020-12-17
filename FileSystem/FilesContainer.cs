@@ -17,7 +17,7 @@ namespace WebServer.FileSystem
         public byte[] GetValueByKey(string key)
         {
             byte[] file = null;
-            container.TryGetValue(key, out file);
+            if (!container.TryGetValue(key, out file)) return null;
             return this.GetBytesCopy(file);
         }
 

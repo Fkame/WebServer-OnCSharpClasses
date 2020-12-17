@@ -48,6 +48,12 @@ namespace WebServer.Network.HelpfulStaff
             return path.Replace(s, UrlPathChar);
         }
 
+        public static string ChangeUrlLikeToSeparator(string path)
+        {
+            char s = Path.DirectorySeparatorChar;
+            return path.Replace(UrlPathChar, s);
+        }
+
         public static List<string> ChangeSeparatorToUrlLike(List<string> paths)
         {
             List<string> pathUrlLike = new List<string>();
