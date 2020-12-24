@@ -11,11 +11,35 @@ namespace WebServer.Network.HelpfulStaff
     /// </summary>
     public static class HttpPrinterHelper
     {
+        /// <summary>
+        /// Цвет для названий параметров из HttpListenerRequest
+        /// </summary>
+        /// <value></value>
         public static ConsoleColor NameColor {get; set;} = ConsoleColor.Red;
+
+        /// <summary>
+        /// Цвет для значений параметров из HttpListenerRequest
+        /// </summary>
+        /// <value></value>
         public static ConsoleColor ValueColor {get; set;} = ConsoleColor.DarkGreen;
+
+        /// <summary>
+        /// Цвет для названий заголовков из HttpListenerRequest.Headers
+        /// </summary>
+        /// <value></value>
         public static ConsoleColor HeadersNamesColor {get; set; } = ConsoleColor.DarkYellow;
+
+        /// <summary>
+        /// Цвет для значений заголовков из HttpListenerRequest.Headers
+        /// </summary>
+        /// <value></value>
         public static ConsoleColor HeadersValuesColor {get; set; } = ConsoleColor.DarkRed;
 
+        /// <summary>
+        /// Выводит значения большинства параметров из HttpListenerRequest, 
+        /// после чего вызывает вывод значений заголовков HttpListenerRequest.Headers.
+        /// </summary>
+        /// <param name="request"></param>
         public static void PrintFullHttpRequestText(HttpListenerRequest request)
         {
             string[] names = {
@@ -63,6 +87,10 @@ namespace WebServer.Network.HelpfulStaff
             HttpPrinterHelper.PrintFullHeaders(request);
         }
 
+        /// <summary>
+        /// Выводит всё содержимое HttpListener.Headers - т.е. содержимое http протокола
+        /// </summary>
+        /// <param name="request"></param>
         public static void PrintFullHeaders(HttpListenerRequest request)
         {
             ConsoleColorPrinter.Write($"Headers=\n", NameColor);
@@ -84,7 +112,11 @@ namespace WebServer.Network.HelpfulStaff
                 }
             }
         }
-
+        
+        /// <summary>
+        /// Выводит минимальную информацию - саму важную - из http запроса.
+        /// </summary>
+        /// <param name="request"></param>
         public static void PrintMinimalHttpInfo(HttpListenerRequest request)
         {
             string[] names = {
@@ -115,6 +147,12 @@ namespace WebServer.Network.HelpfulStaff
             Console.WriteLine();
         }
 
+        /// <summary>
+        /// Принимает желаемый объем информации (перечисление) из запроса и сам запрос (HttpListenerRequest), 
+        /// после чего выводит всю информацию в желаемом объеме.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="amountOfInfo"></param>
         public static void PrintRequestInfoByType(HttpListenerRequest request, ShowInfoType amountOfInfo)
         {
             switch(amountOfInfo)

@@ -3,8 +3,16 @@ using System.IO;
 
 namespace WebServer.FileSystem.HelpfulStaff
 {
+    /// <summary>
+    /// Статический класс. Содержит методы для вывода информации о директории, и вывода содержимого директории
+    /// </summary>
     public static class DirectoryDataPrinter
     {
+        /// <summary>
+        /// Метод для вывода содержимого указанной дирректории. При желании, выводит также содержимое и всех подкаталогов внутри директории.
+        /// </summary>
+        /// <param name="directoryPath"></param>
+        /// <param name="includeSubdirectories"></param>
         public static void PrintAllFilesInDirectory(DirectoryInfo directoryPath, bool includeSubdirectories)
         {
             if (includeSubdirectories)
@@ -19,6 +27,10 @@ namespace WebServer.FileSystem.HelpfulStaff
             }
         }
 
+        /// <summary>
+        /// Метод для вывода в консоль общей информации о директории.
+        /// </summary>
+        /// <param name="directory"></param>
         public static void PrintInfoAboutDirectory(DirectoryInfo directory)
         {
             Console.WriteLine("***** Информация о каталоге *****\n");

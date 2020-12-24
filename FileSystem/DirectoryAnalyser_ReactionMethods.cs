@@ -55,7 +55,7 @@ namespace WebServer.FileSystem
             while (true)
             {
                 try { fileFromDisc = File.ReadAllBytes(path); break; } 
-                catch (Exception ex) {  }
+                catch (Exception) {  }
             }
            
             byte[] fileFromDict = filebuffer.GetValueByKey(localPartOfPath);
@@ -113,7 +113,7 @@ namespace WebServer.FileSystem
             while (true)
             {
                 try { file = File.ReadAllBytes(e.FullPath); break; } 
-                catch (Exception ex) {  }
+                catch (Exception) {  }
             }
 
             string localPath = GetLocalPath(e.FullPath);

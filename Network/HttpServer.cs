@@ -11,6 +11,9 @@ using WebServer.Network.HelpfulStaff;
 
 namespace WebServer.Network
 {
+    /// <summary>
+    /// Класс, реализующий веб-сервер, работающий на протоколе http, и соответственно принимающий http-запросы.
+    /// </summary>
     public class HttpServer
     {
         public string IP {get; private set;}
@@ -30,9 +33,9 @@ namespace WebServer.Network
 
         private HttpListener httpListener;
 
-        public ShowInfoType ShowRequestTextes {get; set;} = ShowInfoType.ShowMinimalInfo;
+        public ShowInfoType LogRequestTextes {get; set;} = ShowInfoType.ShowMinimalInfo;
 
-        public ShowInfoType ShowResponseTextes {get; set;} = ShowInfoType.ShowNothing;
+        public ShowInfoType LogResponseTextes {get; set;} = ShowInfoType.ShowNothing;
 
         private HttpUriHelper uriHelper;
 
@@ -51,6 +54,11 @@ namespace WebServer.Network
             this.DirectoryWorker.NotifyAboutDelete += OnDeleteFile;
         }
 
+        /// <summary>
+        /// Запуск алгоритма прослушиваний запросов - отправки ответов.
+        /// Сперва проиходит запуск анализатора директории, после этого настроивается сам веб-сервер.
+        /// После этого происходит вход в бесконечный цикл ожидания запросов и ответы на них.
+        /// </summary>
         public void Start()
         {
             // Создание объекта, следящим за указанной директорией и управляющим буфером файлов; загружает файлы в буффер.
@@ -103,41 +111,29 @@ namespace WebServer.Network
             HttpListenerRequest request = context.Request;
 
             ConsoleColorPrinter.WriteLineWithTime("Input request: ", ConsoleColor.Green, ConsoleColor.Yellow);
-            HttpPrinterHelper.PrintRequestInfoByType(request, ShowRequestTextes);
+            HttpPrinterHelper.PrintRequestInfoByType(request, LogRequestTextes);
 
             HttpListenerResponse response = context.Response;
 
             // создаем ответ в виде кода html
             this.SendResponce(context);
-            # region Old Code
-            /*
-            string path = Path.Join(System.Environment.CurrentDirectory, 
-                "Resources", 
-                "frontend-test-jQuery-master", 
-                "src",
-                "index.html");
-            ConsoleColorPrinter.WriteLine($"Responce file by way [{path}]", ConsoleColor.DarkGreen);
-            
-            byte[] buffer = File.ReadAllBytes(path);
-            // получаем поток ответа и пишем в него ответ
-            response.ContentLength64 = buffer.Length;
-            Stream output = response.OutputStream;
-            output.Write(buffer, 0, buffer.Length);
-            // закрываем поток
-            output.Close();
-            */
-            #endregion
         }
 
+        /// <summary>
+        /// Отправка ответа на запрос; это может быть что угодно: картинка, html-файл, js-файл, css-файл.
+        /// </summary>
+        /// <param name="context"></param>
         private void SendResponce(HttpListenerContext context)
         {
             string needPath = context.Request.RawUrl;
 
+            // Частный случай запроса - когда не пишется конкретный html файл.
             if (needPath.EndsWith(HttpUriHelper.UrlPathChar)) 
                 needPath = String.Format("{0}index.html", needPath);
 
             needPath = HttpUriHelper.ChangeUrlLikeToSeparator(needPath);
 
+            // Получение и проверка данных по указанной дирректории.
             byte[] file = DirectoryWorker.filebuffer.GetValueByKey(needPath);
             if (file == null) 
             {
@@ -145,6 +141,7 @@ namespace WebServer.Network
                 return;
             }
 
+            // Отправка запроса
             ConsoleColorPrinter.WriteLine($"Responcing file by way [{needPath}]", ConsoleColor.DarkGreen);
             HttpListenerResponse response = context.Response;
             Stream output = response.OutputStream;
@@ -238,6 +235,26 @@ namespace WebServer.Network
                 ConsoleColorPrinter.WriteLine($"Prefix deleted!", ConsoleColor.DarkGreen);
                 this.PrintPrefixes(httpListener);
             }
+        }
+        
+        /// <summary>
+        /// Возвращает путь, по которому хранится "поднятый" сайт.
+        /// </summary>
+        /// <returns></returns>
+        public string GetWebSiteDirectory()
+        {
+            return this.DirectoryWorker.DirectoryPath.ToString();
+        }
+
+        /// <summary>
+        /// Возвращает список прослушиваемых URL адресов.
+        /// </summary>
+        /// <returns></returns>
+        public string[] GetActiveUrls()
+        {
+            string[] array = new string[this.httpListener.Prefixes.Count];
+            httpListener.Prefixes.CopyTo(array, 0);
+            return array;
         }
     }
 }

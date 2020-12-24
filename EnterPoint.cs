@@ -12,6 +12,9 @@ using WebServer.Network.HelpfulStaff;
 
 namespace WebServer
 {
+    /// <summary>
+    /// Точка входа в программу. В точке входа проверяются аргументы на валидность, посл
+    /// </summary>
     class EnterPoint
     {
         static void Main(string[] args)

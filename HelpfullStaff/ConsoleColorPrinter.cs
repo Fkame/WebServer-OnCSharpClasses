@@ -5,6 +5,9 @@ using System.Net.Sockets;
 
 namespace WebServer.HelpfulStaff
 {
+    /// <summary>
+    /// Статический класс. Группирует ряд методов для вывода цветного текста в консоль. После чего возвращает предыдущий цвет текста.
+    /// </summary>
     public static class ConsoleColorPrinter
     {
         public static void WriteLine(string message, ConsoleColor textColor)
@@ -49,7 +52,7 @@ namespace WebServer.HelpfulStaff
         {
             ConsoleColorPrinter.Write($"{DateTime.Now.ToString()} ", color);
         }
-
+        
         public static void WriteLineWithTime(string message, ConsoleColor textColor, ConsoleColor timeColor)
         {
             ConsoleColorPrinter.WriteTime(timeColor);

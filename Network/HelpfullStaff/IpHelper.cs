@@ -11,6 +11,11 @@ namespace WebServer.Network.HelpfulStaff
     /// </summary>
     static class IpHelper
     {
+        /// <summary>
+        /// Определяет, является ли входная строка IPv4.
+        /// </summary>
+        /// <param name="maybeIp"></param>
+        /// <returns></returns>
         public static bool IsIPv4(string maybeIp)
         {
             string[] oktets = maybeIp.Split('.');
