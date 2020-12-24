@@ -14,3 +14,5 @@ D:\source\SimpleNetCommunticationProgs\ClientServerProject\WebServer\obj\Debug\n
 D:\source\SimpleNetCommunticationProgs\ClientServerProject\WebServer\obj\Debug\net5.0\ref\WebServer.dll
 D:\source\SimpleNetCommunticationProgs\ClientServerProject\WebServer\obj\Debug\net5.0\WebServer.pdb
 D:\source\SimpleNetCommunticationProgs\ClientServerProject\WebServer\obj\Debug\net5.0\WebServer.genruntimeconfig.cache
+D:\source\SimpleNetCommunticationProgs\ClientServerProject\WebServer\bin\Debug\net5.0\NLog.dll
+D:\source\SimpleNetCommunticationProgs\ClientServerProject\WebServer\obj\Debug\net5.0\WebServer.csproj.CopyComplete

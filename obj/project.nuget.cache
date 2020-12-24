@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "J8kF4kMHzVWO90JmHm567vbyLwuj8fl7DnUV55zjbANDxHxSTETsnXqEO7x9But2JtsC0rEElvSVN5q+d5FvIA==",
+  "dgSpecHash": "/Fan0fTU2dZD6JI1uOlSZAxRvMmgUa34uiiRKMJ74JaPhnilo97w8FBiOUrle8k+0eYn4Tc4FzSh14l0y+kxZA==",
   "success": true,
   "projectFilePath": "D:\\source\\SimpleNetCommunticationProgs\\ClientServerProject\\WebServer\\WebServer.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\Admin\\.nuget\\packages\\nlog\\4.7.6\\nlog.4.7.6.nupkg.sha512"
+  ],
   "logs": []
 }
