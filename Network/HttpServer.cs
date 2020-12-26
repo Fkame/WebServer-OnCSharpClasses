@@ -39,6 +39,8 @@ namespace WebServer.Network
         public ShowInfoType LogResponseTextes {get; set;} = ShowInfoType.ShowNothing;
 
         private HttpUriHelper uriHelper;
+        
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         public HttpServer(string ip, int port, DirectoryInfo directory)
         {

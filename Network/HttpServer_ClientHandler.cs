@@ -28,7 +28,7 @@ namespace WebServer.Network
 
             // Вывод служебной информации
             ConsoleColorPrinter.WriteLineWithTime($"Server on [{Dns.GetHostName()}] Started!", ConsoleColor.Green, ConsoleColor.Yellow);      
-            ConsoleColorPrinter.WriteLine("Tip: Press Ctrl + C to finish program", ConsoleColor.Magenta); 
+            //ConsoleColorPrinter.WriteLine("Tip: Press Ctrl + C to finish program", ConsoleColor.Magenta); 
 
             // Настройка слушателя http запросов и его запуск.
             httpListener = this.GetConfiguredListener();
@@ -42,6 +42,15 @@ namespace WebServer.Network
                 IAsyncResult result = httpListener.BeginGetContext(new AsyncCallback(ClientHandler), httpListener);
                 result.AsyncWaitHandle.WaitOne();
             }       
+        }
+
+        /// <summary>
+        /// Запуск асинхронной работы сервера.
+        /// </summary>
+        /// <returns></returns>
+        public async void StartAcync()
+        {
+            await Task.Run(this.Start);
         }
 
         /// <summary>

@@ -50,10 +50,21 @@ namespace WebServer
                 else Console.WriteLine("Incorrect path to folder or path does not exits! - Changed for default");
             }
 
-            // Создаём и запускаем HttpServer
+            // Создаём и запускаем HttpServer асинхронно
             HttpServer ws = new HttpServer(ip, port, directory);
-            ws.Start();
+            ws.StartAcync();
+
+            ConsoleColorPrinter.WriteLine("Tip: Press Ctrl + C to finish program or write \"Stop\" to stop server", ConsoleColor.Magenta); 
+            while (Console.ReadLine().ToLower() != "stop") 
+            { 
+                ConsoleColorPrinter.WriteLine("Unknown command!", ConsoleColor.DarkRed);
+            };
+
+            ConsoleColorPrinter.WriteLine(">> Server was stopped by command from terminal", ConsoleColor.Magenta); 
+
         }
+
+
 
         static void Test_IpHelper_IsIPv4()
         {
