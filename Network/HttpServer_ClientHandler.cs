@@ -37,7 +37,7 @@ namespace WebServer.Network
 
             // Бесконечный цикл создания ассинхронных обработчиков входящих запросов. Каждый последующий ждёт пока предыдущий получит запрос.
             // Таким образом они не хаотично появляются каждую микросекунду.
-            while (true)
+            while (httpListener.IsListening)
             {
                 IAsyncResult result = httpListener.BeginGetContext(new AsyncCallback(ClientHandler), httpListener);
                 result.AsyncWaitHandle.WaitOne();
@@ -48,9 +48,22 @@ namespace WebServer.Network
         /// Запуск асинхронной работы сервера.
         /// </summary>
         /// <returns></returns>
-        public async void StartAcync()
+        public async void StartAsync()
         {
             await Task.Run(this.Start);
+        }
+
+        public void Shutdown()
+        {
+            if (httpListener.IsListening)
+            {
+                httpListener.Stop();
+                //Console.WriteLine("Listener stopped");
+            }
+            DirectoryWorker.Shutdown();
+            //Console.WriteLine("File system wathcer stopped");
+            NLog.LogManager.Shutdown();
+            //Console.WriteLine("Logger stopped");
         }
 
         /// <summary>
@@ -78,7 +91,7 @@ namespace WebServer.Network
         {
             HttpListener listener = (HttpListener) result.AsyncState;
             HttpListenerContext context = listener.EndGetContext(result);
-
+            
             HttpListenerRequest request = context.Request;
 
             ConsoleColorPrinter.WriteLineWithTime("Input request: ", ConsoleColor.Green, ConsoleColor.Yellow);

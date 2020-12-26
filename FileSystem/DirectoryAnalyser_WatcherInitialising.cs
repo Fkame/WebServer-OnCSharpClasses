@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WebServer.FileSystem
@@ -18,8 +19,8 @@ namespace WebServer.FileSystem
 
         private Task StartWatching()
         {
-             // Создаётся новый FileSystemWatcher и прозводится его настройка
-            using (FileSystemWatcher watcher = new FileSystemWatcher())
+            // Создаётся новый FileSystemWatcher и прозводится его настройка
+            using (watcher = new FileSystemWatcher())
             {
                 watcher.Path = DirectoryPath.FullName;
                 watcher.IncludeSubdirectories = true;

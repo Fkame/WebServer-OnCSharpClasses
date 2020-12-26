@@ -52,7 +52,7 @@ namespace WebServer
 
             // Создаём и запускаем HttpServer асинхронно
             HttpServer ws = new HttpServer(ip, port, directory);
-            ws.StartAcync();
+            ws.StartAsync();
 
             ConsoleColorPrinter.WriteLine("Tip: Press Ctrl + C to finish program or write \"Stop\" to stop server", ConsoleColor.Magenta); 
             while (Console.ReadLine().ToLower() != "stop") 
@@ -60,11 +60,10 @@ namespace WebServer
                 ConsoleColorPrinter.WriteLine("Unknown command!", ConsoleColor.DarkRed);
             };
 
+            ws.Shutdown();
             ConsoleColorPrinter.WriteLine(">> Server was stopped by command from terminal", ConsoleColor.Magenta); 
 
         }
-
-
 
         static void Test_IpHelper_IsIPv4()
         {

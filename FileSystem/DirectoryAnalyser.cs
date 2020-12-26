@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace WebServer.FileSystem
 {
@@ -24,6 +25,8 @@ namespace WebServer.FileSystem
         public DirectoryInfo DirectoryPath{ get; private set; }
 
         public FilesContainer filebuffer {get; private set; }
+        
+        private FileSystemWatcher watcher;
 
         public DirectoryAnalyser(DirectoryInfo directoryPath) 
         {
@@ -41,6 +44,19 @@ namespace WebServer.FileSystem
             
             // Запуск отслеживателя изменений в директории и поддиректориях. Осторожно: работает асинхронно!
             this.StartWatchingForChangesInFiles();
+        }
+
+        public void Shutdown()
+        {
+            filebuffer.Clear();
+            DirectoryPath = null;
+
+            watcher.Changed -= OnChanged;
+            watcher.Created -= OnCreated;
+            watcher.Deleted -= OnDeleted;
+            watcher.Renamed -= OnRenamed;
+            watcher = null;
+            
         }
 
         /// <summary>
