@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace WebServer.FileSystem
 {
@@ -110,7 +112,7 @@ namespace WebServer.FileSystem
         private void OnRenamed(object source, RenamedEventArgs e) 
         {
             wasRenamed = true;
-            Console.WriteLine($"{DateTime.Now} File: {e.OldFullPath} -- to -- {e.FullPath} -> {e.ChangeType}");
+            //Console.WriteLine($"{DateTime.Now} File: {e.OldFullPath} -- to -- {e.FullPath} -> {e.ChangeType}");
             logger.Trace($"{e.ChangeType} | {DateTime.Now} -> File: {this.GetLocalPath(e.OldFullPath)} -- to -- {this.GetLocalPath(e.FullPath)}");
             
             string oldLocalPath = GetLocalPath(e.OldFullPath);
@@ -128,18 +130,22 @@ namespace WebServer.FileSystem
         private void OnCreated(object source, FileSystemEventArgs e) 
         {
             //Console.WriteLine($"{DateTime.Now} File: {e.FullPath} -> {e.ChangeType}");
-            logger.Trace($"{DateTime.Now} File: {e.FullPath} -> {e.ChangeType}");
+            logger.Trace($"{e.ChangeType} | {DateTime.Now} -> File: {e.FullPath}");
 
             byte[] file = null;
-            while (true)
+            
+            int count = 10;
+            while (count-- > 0)
             {
                 try { file = File.ReadAllBytes(e.FullPath); break; } 
-                catch (Exception) {  }
+                catch (Exception) {  Thread.Sleep(10); }
             }
+            if (count <= 0) return;
 
             string localPath = GetLocalPath(e.FullPath);
             filebuffer.Add(localPath, file);
 
+            logger.Trace("Calling event about creating!");
             // Уведомим httpServer о добавленном файле
             NotifyAboutCreate?.Invoke(new FileInfo(e.FullPath));
         }
@@ -153,7 +159,7 @@ namespace WebServer.FileSystem
         private void OnDeleted(object source, FileSystemEventArgs e) 
         {
             //Console.WriteLine($"{DateTime.Now} File: {e.FullPath} -> {e.ChangeType}");   
-            logger.Trace($"{DateTime.Now} File: {e.FullPath} -> {e.ChangeType}");
+            logger.Trace($"{e.ChangeType} | {DateTime.Now} -> File: {e.FullPath}");
             string localPath = GetLocalPath(e.FullPath);
             filebuffer.Remove(localPath);
             //this.PrintFileBuffer(filebuffer, DirectoryPath);

@@ -64,7 +64,7 @@ namespace WebServer.Network
                 }
                 
                 //ConsoleColorPrinter.WriteLine($"Prefix deleted!", ConsoleColor.DarkGreen);
-                logger.Debug($"HTML file deleted in=[{localDirectory}/]. Deleting it from .Prefixes");
+                logger.Debug($"Deleting finished");
                 //this.PrintPrefixes(httpListener);
             }
         }

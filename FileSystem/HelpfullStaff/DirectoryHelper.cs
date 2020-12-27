@@ -1,8 +1,6 @@
 using System;
 using System.IO;
 
-using WebServer.HelpfulStaff;
-
 namespace WebServer.FileSystem.HelpfulStaff
 {
     /// <summary>
@@ -60,7 +58,5 @@ namespace WebServer.FileSystem.HelpfulStaff
             } while (answer != 'y' & answer != 'n');
             return answer;
         }
-
-        
     }
 }

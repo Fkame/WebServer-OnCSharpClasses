@@ -9,6 +9,7 @@ using WebServer.Network;
 using WebServer.FileSystem;
 using WebServer.FileSystem.HelpfulStaff;
 using WebServer.Network.HelpfulStaff;
+using WebServer.WebServer_Test;
 
 namespace WebServer
 {
@@ -19,6 +20,9 @@ namespace WebServer
     {
         static void Main(string[] args)
         {
+            EnterPoint.RunTests();
+            return;
+            
             // Сперва присвоим переменным значения по умолчанию.
             string ip = DefaultArguments.LocalIp;
             int port = DefaultArguments.HttpPort;
@@ -63,6 +67,21 @@ namespace WebServer
             ws.Shutdown();
             ConsoleColorPrinter.WriteLine(">> Server was stopped by command from terminal", ConsoleColor.Magenta); 
 
+        }
+
+        static void RunTests()
+        {
+            WebServer_Test.PortInitialisation_Test portTest = new WebServer_Test.PortInitialisation_Test();
+            //portTest.StartTest();
+
+            WebServer_Test.CreatedUrls_Test urlsTest = new WebServer_Test.CreatedUrls_Test();
+            //urlsTest.StartTest();
+
+            WebServer_Test.DirectoryInitialisation_Test directoryTest = new WebServer_Test.DirectoryInitialisation_Test();
+            //directoryTest.StartTest();
+
+            WebServer_Test.DynamicUrlAdaptation_Test uriTest = new WebServer_Test.DynamicUrlAdaptation_Test();
+            uriTest.StartTest();
         }
 
         static void Test_IpHelper_IsIPv4()

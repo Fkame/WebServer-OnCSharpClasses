@@ -23,6 +23,8 @@ namespace WebServer.Network
         /// </summary>
         public void Start()
         {
+            #region Old code
+            /*
             // Создание объекта, следящим за указанной директорией и управляющим буфером файлов; загружает файлы в буффер.
             DirectoryWorker.Start();
 
@@ -35,7 +37,51 @@ namespace WebServer.Network
             httpListener.Start();
             ConsoleColorPrinter.WriteLineWithTime("Start listening requests...\n", ConsoleColor.Green, ConsoleColor.Yellow);
             //logger.Debug("Start listening requests...\n"); 
-            
+            */
+            #endregion
+
+            // Инициализация всех компонентов и их запуск
+            this.DoInitialisingOfAllComponents();
+
+            // Запуск главного цикла
+            this.DoMainCycle();
+        }
+
+        /// <summary>
+        /// Запуск асинхронной работы сервера.
+        /// </summary>
+        /// <returns></returns>
+        public async void StartAsync()
+        {
+            // Инициализация всех компонентов и их запуск
+            this.DoInitialisingOfAllComponents();
+
+            // Запуск главного цикла
+            await Task.Run(this.DoMainCycle);
+        }
+
+        /// <summary>
+        /// Метод инициализирует запуск работы всех модулей программы.
+        /// </summary>
+        private void DoInitialisingOfAllComponents()
+        {
+            // Создание объекта, следящим за указанной директорией и управляющим буфером файлов; загружает файлы в буффер.
+            DirectoryWorker.Start();
+
+            // Вывод служебной информации
+            ConsoleColorPrinter.WriteLineWithTime($"Server on [{Dns.GetHostName()}] Started!", ConsoleColor.Green, ConsoleColor.Yellow);    
+
+            // Настройка слушателя http запросов и его запуск.
+            httpListener = this.GetConfiguredListener();
+            httpListener.Start();
+            ConsoleColorPrinter.WriteLineWithTime("Start listening requests...\n", ConsoleColor.Green, ConsoleColor.Yellow);
+        }
+
+        /// <summary>
+        /// Основной цикл обслуживания запросов клиентов.
+        /// </summary>
+        private void DoMainCycle()
+        {
             try
             {
                 while (httpListener.IsListening)
@@ -52,31 +98,27 @@ namespace WebServer.Network
         }
 
         /// <summary>
-        /// Запуск асинхронной работы сервера.
-        /// </summary>
-        /// <returns></returns>
-        public async void StartAsync()
-        {
-            await Task.Run(this.Start);
-        }
-
-        /// <summary>
         /// Очистка ресурсов, которые использует объект. Прерываются асинхронные операции, которые делаются на фоне.
         /// </summary>
         public void Shutdown()
         {
-            if (httpListener.IsListening)
+            try
             {
-                httpListener.Stop();
-                //logger.Debug("Listener stopped");
-                ConsoleColorPrinter.WriteLineWithTime("Listener stopped", ConsoleColor.DarkGreen, ConsoleColor.Yellow);
+                if (httpListener.IsListening)
+                {
+                    httpListener.Stop();
+                    //logger.Debug("Listener stopped");
+                    ConsoleColorPrinter.WriteLineWithTime("Listener stopped", ConsoleColor.DarkGreen, ConsoleColor.Yellow);
+                }
+                DirectoryWorker.Shutdown();
+                //logger.Debug("File system wathcer stopped");
+                ConsoleColorPrinter.WriteLineWithTime("File system watcher stopped", ConsoleColor.DarkGreen, ConsoleColor.Yellow);
+                NLog.LogManager.Shutdown();
+                //logger.Debug("Logger stopped");
+                ConsoleColorPrinter.WriteLineWithTime("Logger stopped", ConsoleColor.DarkGreen, ConsoleColor.Yellow);
             }
-            DirectoryWorker.Shutdown();
-            //logger.Debug("File system wathcer stopped");
-            ConsoleColorPrinter.WriteLineWithTime("File system watcher stopped", ConsoleColor.DarkGreen, ConsoleColor.Yellow);
-            NLog.LogManager.Shutdown();
-            //logger.Debug("Logger stopped");
-            ConsoleColorPrinter.WriteLineWithTime("Logger stopped", ConsoleColor.DarkGreen, ConsoleColor.Yellow);
+            catch (Exception) { }
+           
         }
 
         /// <summary>
