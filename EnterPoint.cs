@@ -19,10 +19,17 @@ namespace WebServer
     class EnterPoint
     {
         static void Main(string[] args)
-        {
-            EnterPoint.RunTests();
-            return;
-            
+        {   
+            // Проверка тестового режима
+            if (args.Length == 1)
+            {
+               if (args[0].ToLower().Equals("test"))
+                {
+                    EnterPoint.RunTests();
+                    return;
+                } 
+            }
+                
             // Сперва присвоим переменным значения по умолчанию.
             string ip = DefaultArguments.LocalIp;
             int port = DefaultArguments.HttpPort;
@@ -68,6 +75,7 @@ namespace WebServer
             ConsoleColorPrinter.WriteLine(">> Server was stopped by command from terminal", ConsoleColor.Magenta); 
 
         }
+
 
         static void RunTests()
         {
