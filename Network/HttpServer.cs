@@ -8,6 +8,9 @@ using System.Collections.Generic;
 using WebServer.HelpfulStaff;
 using WebServer.FileSystem;
 using WebServer.Network.HelpfulStaff;
+using WebServer.Logging;
+
+using NLog;
 
 namespace WebServer.Network
 {
@@ -17,30 +20,51 @@ namespace WebServer.Network
     /// </summary>
     public partial class HttpServer
     {
+        /// <summary>
+        /// Логгер из библиотеки Nlog.
+        /// </summary>
+        /// <returns></returns>
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+        /// <summary>
+        /// IP адрес сервера.
+        /// </summary>
+        /// <value></value>
         public string IP {get; private set;}
+
+        /// <summary>
+        /// Порт по которому работает сервер.
+        /// </summary>
+        /// <value></value>
         public int Port {get; private set;}
 
         /// <summary>
         /// Данный объект выполняет ряд важных задач по работе с файловой системой:
-        /// 1.Он инкапсулирует в себе контейнер, который хранит в себе буферезированные файлы (то есть загружает их в оперативную память).
+        /// 1.Он инкапсулирует в себе контейнер, который хранит в себе буфферезированные файлы (то есть загружает их в оперативную память).
         /// Эта штука нужна, чтобы при отправке файла по http запросу не читать его с диска, тем самым, скорее всего, производительность
         /// будет выше.
-        /// 2. Объект запускает FileSystemWatcher, который отслеживает изменеия в переданной директории и сообщает о них.
-        /// 3. Объект реагирует на изменения, и соответствующе обновляет буфер. Это нужно, чтобы можно было подправить сайт, не выключая сервер.
+        /// 2. Объект запускает FileSystemWatcher, который отслеживает изменения в переданной директории и сообщает о них веб-серверу.
+        /// 3. Объект реагирует на изменения в папке с сайтом, и соответствующе обновляет буфер. Это нужно, чтобы можно было подправить сайт, 
+        /// не выключая сервер.
         /// 4. TODO--> Нужно настроить сихнронизацию доступа к буферу файлов, иначе возможна отправка устаревшей информации. И возникновение ошибок.
         /// Скорее всего будет достаточно что-то типа монитора при изменениии.
         /// </summary>
         private DirectoryAnalyser DirectoryWorker;
 
+        /// <summary>
+        /// Экземпляр класса HttpListener, т.е. это прослушиватель http запросов.
+        /// </summary>            
         private HttpListener httpListener;
 
-        public ShowInfoType LogRequestTextes {get; set;} = ShowInfoType.ShowMinimalInfo;
+        //public ShowInfoType LogRequestTextes {get; set;} = ShowInfoType.ShowMinimalInfo;
 
-        public ShowInfoType LogResponseTextes {get; set;} = ShowInfoType.ShowNothing;
+        //public ShowInfoType LogResponseTextes {get; set;} = ShowInfoType.ShowNothing;
 
+        /// <summary>
+        /// Экзмепляр класса HttpUriHelper. Инкапсулирует в себе всякие действия по смене разделителей ОС на разделители URL и наоборот.
+        /// Помимо этого хранит url верхнего уровня и упрощает объединение подкаталогов с верхними url.
+        /// </summary>
         private HttpUriHelper uriHelper;
-        
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         public HttpServer(string ip, int port, DirectoryInfo directory)
         {
@@ -48,6 +72,10 @@ namespace WebServer.Network
             this.Port = port;
             uriHelper = new HttpUriHelper(ip, port);
 
+            // Настроим логгер
+            this.LoadLogger();
+
+            // Настройка буффера и анализатора дирректории
             this.DirectoryWorker = new DirectoryAnalyser(directory);
 
             // Добавим обработчик события создания нового файла
@@ -88,6 +116,17 @@ namespace WebServer.Network
             this.PrintPrefixes(httpListener);
             
             return httpListener;
+        }
+
+        private void LoadLogger()
+        {
+            bool isLoaded = NLogHelper.LoadLoggerConfigsFromFile("Logging", "nlog.config");
+            if (!isLoaded)
+            {
+                NLogHelper.SetLoggerConfigurationManually();
+                logger.Debug("Error of loading configs from file - Logger set by manual configs");
+            }
+            else logger.Debug("Logger configs loading success");
         }
     }
 }

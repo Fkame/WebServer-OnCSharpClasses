@@ -27,21 +27,28 @@ namespace WebServer.Network
             DirectoryWorker.Start();
 
             // Вывод служебной информации
-            ConsoleColorPrinter.WriteLineWithTime($"Server on [{Dns.GetHostName()}] Started!", ConsoleColor.Green, ConsoleColor.Yellow);      
-            //ConsoleColorPrinter.WriteLine("Tip: Press Ctrl + C to finish program", ConsoleColor.Magenta); 
+            ConsoleColorPrinter.WriteLineWithTime($"Server on [{Dns.GetHostName()}] Started!", ConsoleColor.Green, ConsoleColor.Yellow); 
+            //logger.Debug($"Server on [{Dns.GetHostName()}] Started!");     
 
             // Настройка слушателя http запросов и его запуск.
             httpListener = this.GetConfiguredListener();
             httpListener.Start();
             ConsoleColorPrinter.WriteLineWithTime("Start listening requests...\n", ConsoleColor.Green, ConsoleColor.Yellow);
-
-            // Бесконечный цикл создания ассинхронных обработчиков входящих запросов. Каждый последующий ждёт пока предыдущий получит запрос.
-            // Таким образом они не хаотично появляются каждую микросекунду.
-            while (httpListener.IsListening)
+            //logger.Debug("Start listening requests...\n"); 
+            
+            try
             {
-                IAsyncResult result = httpListener.BeginGetContext(new AsyncCallback(ClientHandler), httpListener);
-                result.AsyncWaitHandle.WaitOne();
-            }       
+                while (httpListener.IsListening)
+                {
+                    IAsyncResult result = httpListener.BeginGetContext(new AsyncCallback(ClientHandler), httpListener);
+                    result.AsyncWaitHandle.WaitOne();
+                }  
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Some troubles with main listener cycle. This can be because of finishing programm.\nMessage: {0}\nStackTrace:\n{1}",
+                    ex.Message, ex.StackTrace);
+            }   
         }
 
         /// <summary>
@@ -53,17 +60,23 @@ namespace WebServer.Network
             await Task.Run(this.Start);
         }
 
+        /// <summary>
+        /// Очистка ресурсов, которые использует объект. Прерываются асинхронные операции, которые делаются на фоне.
+        /// </summary>
         public void Shutdown()
         {
             if (httpListener.IsListening)
             {
                 httpListener.Stop();
-                //Console.WriteLine("Listener stopped");
+                //logger.Debug("Listener stopped");
+                ConsoleColorPrinter.WriteLineWithTime("Listener stopped", ConsoleColor.DarkGreen, ConsoleColor.Yellow);
             }
             DirectoryWorker.Shutdown();
-            //Console.WriteLine("File system wathcer stopped");
+            //logger.Debug("File system wathcer stopped");
+            ConsoleColorPrinter.WriteLineWithTime("File system watcher stopped", ConsoleColor.DarkGreen, ConsoleColor.Yellow);
             NLog.LogManager.Shutdown();
-            //Console.WriteLine("Logger stopped");
+            //logger.Debug("Logger stopped");
+            ConsoleColorPrinter.WriteLineWithTime("Logger stopped", ConsoleColor.DarkGreen, ConsoleColor.Yellow);
         }
 
         /// <summary>
@@ -78,8 +91,9 @@ namespace WebServer.Network
             }
             catch (Exception ex) 
             {
-                ConsoleColorPrinter.WriteLine(ex.Message, ConsoleColor.White);
-                ConsoleColorPrinter.WriteLine(ex.StackTrace, ConsoleColor.White);
+                //ConsoleColorPrinter.WriteLine(ex.Message, ConsoleColor.White);
+                //ConsoleColorPrinter.WriteLine(ex.StackTrace, ConsoleColor.White);
+                logger.Warn($"Message:{ex.Message}\nStackTrace{ex.StackTrace}\n");
             }
         }
 
@@ -94,8 +108,10 @@ namespace WebServer.Network
             
             HttpListenerRequest request = context.Request;
 
-            ConsoleColorPrinter.WriteLineWithTime("Input request: ", ConsoleColor.Green, ConsoleColor.Yellow);
-            HttpPrinterHelper.PrintRequestInfoByType(request, LogRequestTextes);
+            //ConsoleColorPrinter.WriteLineWithTime("Input request: ", ConsoleColor.Green, ConsoleColor.Yellow);
+            logger.Info("Input request: ");
+            logger.Info(HttpPrinterHelper.GetMinimalHttpInfo(request));
+            //HttpPrinterHelper.PrintRequestInfoByType(request, ShowInfoByType.ShowMinimalInfo);
 
             HttpListenerResponse response = context.Response;
 
@@ -121,12 +137,14 @@ namespace WebServer.Network
             byte[] file = DirectoryWorker.filebuffer.GetValueByKey(needPath);
             if (file == null) 
             {
-                ConsoleColorPrinter.WriteLine($"Can not find file for responce by way [{needPath}]", ConsoleColor.DarkGreen);
+                //ConsoleColorPrinter.WriteLine($"Can not find file for responce by way [{needPath}]", ConsoleColor.DarkGreen);
+                logger.Warn($"Can not find file for responce by way [{needPath}]");
                 return;
             }
 
             // Отправка запроса
-            ConsoleColorPrinter.WriteLine($"Responcing file by way [{needPath}]", ConsoleColor.DarkGreen);
+            //ConsoleColorPrinter.WriteLine($"Responcing file by way [{needPath}]", ConsoleColor.DarkGreen);
+            logger.Info($"Responcing file by way [{needPath}]");
             HttpListenerResponse response = context.Response;
             Stream output = response.OutputStream;
             output.Write(file, 0, file.Length);
@@ -134,6 +152,10 @@ namespace WebServer.Network
             response.Close();
         }
 
+        /// <summary>
+        /// Выводит в консоль доступные для подключения URL адреса.
+        /// </summary>
+        /// <param name="httpListener"></param>
         private void PrintPrefixes(HttpListener httpListener)
         {
             ConsoleColorPrinter.WriteLineWithTime("Set next Prefixes:", ConsoleColor.Green, ConsoleColor.Yellow);

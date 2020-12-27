@@ -17,3 +17,4 @@
 # Additional ignorities
 /Resources
 /WebSite
+bin/Debug/net5.0/logs/*

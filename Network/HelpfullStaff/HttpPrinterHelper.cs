@@ -147,6 +147,38 @@ namespace WebServer.Network.HelpfulStaff
             Console.WriteLine();
         }
 
+        public static string GetMinimalHttpInfo(HttpListenerRequest request)
+        {
+            string[] names = {
+                "UserHostAddress=",
+                "Url=", 
+                "RawUrl=",
+                "ProtocolVersion=",      
+                "HttpMethod=",  
+                "Content-Type=",
+                "Content-Encoding="
+            };
+
+            string[] values = {
+                $"{request.UserHostAddress}",
+                $"{request.Url.OriginalString}",
+                $"{request.RawUrl}",
+                $"{request.ProtocolVersion}",
+                $"{request.HttpMethod}",
+                $"{request.ContentType}",
+                $"{request.ContentEncoding}"
+            };
+
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < names.Length; i++)
+            {
+                builder.Append(names[i]).Append(values[i]).Append('\n');
+               
+            }
+            
+            return builder.ToString();
+        }
+
         /// <summary>
         /// Принимает желаемый объем информации (перечисление) из запроса и сам запрос (HttpListenerRequest), 
         /// после чего выводит всю информацию в желаемом объеме.

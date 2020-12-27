@@ -17,7 +17,10 @@ namespace WebServer.FileSystem
             await Task.Run(StartWatching);
         }
 
-        private Task StartWatching()
+        /// <summary>
+        /// Асихнронный метод, который постоянно следит за изменениями в дирректории
+        /// </summary>
+        private void StartWatching()
         {
             // Создаётся новый FileSystemWatcher и прозводится его настройка
             using (watcher = new FileSystemWatcher())
@@ -41,15 +44,23 @@ namespace WebServer.FileSystem
                 watcher.Deleted += OnDeleted;
                 watcher.Renamed += OnRenamed;
 
-                Console.WriteLine("\nWatching Events creater");
+                //Console.WriteLine("\nWatching Events creater");
+                logger.Trace("Watching Events created\n");
 
                 // Начало наблюдения
                 watcher.EnableRaisingEvents = true;
-                Console.WriteLine($"\nWatching for directory [{DirectoryPath}] and it subdirectories start!");
+                //Console.WriteLine($"\nWatching for directory [{DirectoryPath}] and it subdirectories start!");
+                logger.Trace($"Watching for directory [{DirectoryPath}] and it subdirectories start!\n");
 
                 while (true)
                 {
-                    watcher.WaitForChanged(WatcherChangeTypes.All);
+                    try { watcher.WaitForChanged(WatcherChangeTypes.All); }
+                    catch (Exception ex) 
+                    {
+                        if (watcher == null) logger.Trace("FileSystemWatcher == null -> Serves seems to shutdown");  
+                        else logger.Error($"FileSystemWatcher stop because: {ex.Message}\nStackTrace:\n{ex.StackTrace}\n");
+                        break;
+                    }
                 }
             }
         }

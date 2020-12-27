@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NLog;
 
 namespace WebServer.FileSystem
 {
@@ -22,10 +23,28 @@ namespace WebServer.FileSystem
     /// </remarks>
     public partial class DirectoryAnalyser
     {
+        /// <summary>
+        /// Логгер из библиотеки Nlog.
+        /// </summary>
+        /// <returns></returns>
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+        /// <summary>
+        /// Дирректория, за которой изменениями в которой нужно следить. И файлы которой (и файлы подкаталогов этой дирректории) будут
+        /// помещены в буффер.
+        /// </summary>
+        /// <value></value>
         public DirectoryInfo DirectoryPath{ get; private set; }
 
+        /// <summary>
+        /// Экземпляр класса FilesContainer. Буффер файлов. По сути это обёртка над словарём. Чтобы упростить ряд специфических операций с ним.
+        /// </summary>
+        /// <value></value>
         public FilesContainer filebuffer {get; private set; }
         
+        /// <summary>
+        /// Экзмепляр класса FileSystemWatcher. Данный объект реализует слежку за изменениями в дирректории и уведомляет о них.
+        /// </summary>
         private FileSystemWatcher watcher;
 
         public DirectoryAnalyser(DirectoryInfo directoryPath) 
@@ -34,6 +53,9 @@ namespace WebServer.FileSystem
             filebuffer = new FilesContainer();
         }
 
+        /// <summary>
+        /// Запуск всех важных задач, которые выполняет объект. Как только он их все запустит, так сразу вернёт управление обратно.
+        /// </summary>
         public void Start()
         { 
             // Загрузка файлов с диска в буффер
@@ -46,6 +68,9 @@ namespace WebServer.FileSystem
             this.StartWatchingForChangesInFiles();
         }
 
+        /// <summary>
+        /// Очистка ресурсов, которые использует объект. Прерываются асинхронные операции, которые делаются на фоне.
+        /// </summary>
         public void Shutdown()
         {
             filebuffer.Clear();
@@ -55,8 +80,7 @@ namespace WebServer.FileSystem
             watcher.Created -= OnCreated;
             watcher.Deleted -= OnDeleted;
             watcher.Renamed -= OnRenamed;
-            watcher = null;
-            
+            watcher = null;     
         }
 
         /// <summary>
@@ -76,21 +100,27 @@ namespace WebServer.FileSystem
             }
         }
 
+        /// <summary>
+        /// Выводит всё содержимое буффера в виде: ключ(путь) -> содержимое(null/not null).
+        /// </summary>
+        /// <param name="filebuffer"></param>
+        /// <param name="directoryPath"></param>
         private void PrintFileBuffer(FilesContainer filebuffer, DirectoryInfo directoryPath)
         {
-            Console.WriteLine("\n--- Writing Dictionaty ---");
+            //Console.WriteLine($"--- Files in {DirectoryPath} and it subdirectories ---");
+            logger.Trace($"--- Files in {DirectoryPath} and it subdirectories ---");
             string[] keys = filebuffer.GetKeys();
             foreach (string key in keys)
             {
-                StringBuilder shortPath = new StringBuilder(key);
-                //shortPath.Remove(0, directoryPath.FullName.Length);
-                Console.WriteLine($"[{shortPath}] -> somefile...(null={filebuffer.GetValueByKey(key)==null})");
+                //Console.WriteLine($"[{key}] -> somefile...(null={filebuffer.GetValueByKey(key)==null})");
+                logger.Trace($"[{key}] -> somefile...(null={filebuffer.GetValueByKey(key)==null})");
             }
-            Console.WriteLine("--- End Writing Dictionary ---\n");
+            //Console.WriteLine("--- End Writing Dictionary ---\n");
+            logger.Trace("---End of files ---\n");
         }
 
         /// <summary>
-        /// Выполняет поиск директорий, содержащих Html файл - они станут префиксами URL.
+        /// Выполняет поиск директорий (то есть папок), содержащих Html файл - они станут префиксами URL.
         /// </summary>
         /// <returns></returns>
         public List<string> GetDirectoriesWithDotHTML()
@@ -113,6 +143,12 @@ namespace WebServer.FileSystem
             return directoriesWithDotHTML;
         }
 
+        /// <summary>
+        /// Позволяет получить из полного пути к файлу/папке сокращённый - отрезает приставку DirectoryPath от пути.
+        /// Если входной путь не содержит приставки DirectoryPath - метод возвращает пустую строку.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public string GetLocalPath(string path)
         {
             if (!path.StartsWith(this.DirectoryPath.FullName)) return string.Empty;
